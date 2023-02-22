@@ -1,6 +1,5 @@
 import React from "react";
 import Header from "./header/Header";
-
 import Footer from "./footer/Footer";
 import { Redirect, Route, Switch } from "react-router-dom";
 import About from "./pages/About";
@@ -10,6 +9,8 @@ import ContactUs from "./pages/ContactUs";
 import { ShowCartContextProvider } from "./store/showCart-context";
 import { ProductContextProvider } from "./store/product-context";
 import ProductDetail from "./pages/ProductDetail";
+import { CartContextProvider } from "./store/cart-Context";
+import Login from "./pages/Login";
 
 function App() {
   const productsArr = [
@@ -41,25 +42,23 @@ function App() {
 
   return (
     <React.Fragment>
-      <ShowCartContextProvider>
-        <Header />
-      </ShowCartContextProvider>
-
       <Route path="/" exact>
         <Redirect to="/home" />
       </Route>
-
       <Route path="/home">
         <Home />
       </Route>
 
       <Switch>
         <ProductContextProvider>
-          <ShowCartContextProvider>
-            <Route path="/store" exact>
-              <Store productList={productsArr} />
-            </Route>
-          </ShowCartContextProvider>
+          <CartContextProvider>
+            <ShowCartContextProvider>
+              <Header />
+              <Route path="/store" exact>
+                <Store productList={productsArr} />
+              </Route>
+            </ShowCartContextProvider>
+          </CartContextProvider>
 
           <Route path="/store/:productId">
             <ProductDetail />
@@ -67,10 +66,13 @@ function App() {
         </ProductContextProvider>
       </Switch>
 
+      <Route path="/login">
+        <Login />
+      </Route>
+
       <Route path="/about">
         <About />
       </Route>
-
       <Route path="/contact">
         <ContactUs />
       </Route>

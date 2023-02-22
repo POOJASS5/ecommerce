@@ -2,7 +2,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import classes from "./Header.module.css";
 import HeaderCartButton from "./HeaderCartButton";
-
 const Header = () => {
   return (
     <React.Fragment>
@@ -22,6 +21,11 @@ const Header = () => {
             <li>
               <NavLink activeClassName={classes.active} to="/about">
                 ABOUT
+              </NavLink>
+            </li>
+            <li>
+              <NavLink activeClassName={classes.active} to="/login">
+                LOGIN
               </NavLink>
             </li>
             <li>

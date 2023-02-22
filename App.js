@@ -1,34 +1,37 @@
-import React, { useContext, useEffect } from "react";
-import Header from "./header/Header";
-
-import Footer from "./footer/Footer";
+import React, { useContext, useEffect, Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import About from "./pages/About";
-import Home from "./pages/Home";
-import Store from "./pages/Store";
-import ContactUs from "./pages/ContactUs";
+import Header from "./header/Header";
+import Footer from "./footer/Footer";
+// import About from "./pages/About";
+// import Home from "./pages/Home";
+// import Store from "./pages/Store";
+// import ContactUs from "./pages/ContactUs";
 import { ShowCartContextProvider } from "./store/showCart-context";
 import { ProductContextProvider } from "./store/product-context";
-import ProductDetail from "./pages/ProductDetail";
-
-import Login from "./pages/Login";
+// import ProductDetail from "./pages/ProductDetail";
+// import Login from "./pages/Login";
 import loginContext from "./store/login-context";
+import LoadingSpinner from "./UI/LoadingSpinner";
 import cartContext from "./store/cart-Context";
+
+const Home = React.lazy(() => import("./pages/Home"));
+const Store = React.lazy(() => import("./pages/Store"));
+const About = React.lazy(() => import("./pages/About"));
+const Login = React.lazy(() => import("./pages/Login"));
+const ContactUs = React.lazy(() => import("./pages/ContactUs"));
+const ProductDetail = React.lazy(() => import("./pages/ProductDetail"));
 
 function App() {
   const loginCtx = useContext(loginContext);
   const cartCtx = useContext(cartContext);
-
   const { loginCartHandler } = cartCtx;
   const { isloggedIn } = loginCtx;
-
   useEffect(() => {
     if (isloggedIn) {
       console.log("called");
       loginCartHandler();
     }
   }, [loginCartHandler, isloggedIn]);
-
   const productsArr = [
     {
       title: "Colors",
@@ -57,7 +60,7 @@ function App() {
   ];
 
   return (
-    <React.Fragment>
+    <Suspense fallback={<LoadingSpinner />}>
       <ShowCartContextProvider>
         <Header />
       </ShowCartContextProvider>
@@ -67,7 +70,6 @@ function App() {
       <Route path="/home">
         <Home />
       </Route>
-
       <Switch>
         <ProductContextProvider>
           <ShowCartContextProvider>
@@ -76,31 +78,29 @@ function App() {
               {!loginCtx.isloggedIn && <Redirect to="/login" />}
             </Route>
           </ShowCartContextProvider>
-
           <Route path="/product/:productId">
             {loginCtx.isloggedIn && <ProductDetail />}
             {!loginCtx.isloggedIn && <Redirect to="/login" />}
           </Route>
         </ProductContextProvider>
       </Switch>
-
       <Route path="/about">
         <About />
       </Route>
       <Route path="/contact">
         <ContactUs />
       </Route>
-
       {/* <Route path="*">
         <Redirect to="/home" />
       </Route> */}
       <Route path="/login">
         {!loginCtx.isloggedIn && <Login />}
-        {loginCtx.isloggedIn && <Redirect to="/home" />}
+        {loginCtx.isloggedIn && <Redirect to="/product" />}
       </Route>
       {/* <Section productList={productsArr} /> */}
       <Footer />
-    </React.Fragment>
+    </Suspense>
   );
 }
+
 export default App;

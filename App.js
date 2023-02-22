@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import Header from "./header/Header";
+
 import Footer from "./footer/Footer";
 import { Redirect, Route, Switch } from "react-router-dom";
 import About from "./pages/About";
@@ -11,8 +12,10 @@ import { ProductContextProvider } from "./store/product-context";
 import ProductDetail from "./pages/ProductDetail";
 import { CartContextProvider } from "./store/cart-Context";
 import Login from "./pages/Login";
+import loginContext from "./store/login-context";
 
 function App() {
+  const loginCtx = useContext(loginContext);
   const productsArr = [
     {
       title: "Colors",
@@ -39,7 +42,6 @@ function App() {
         "https://prasadyash2411.github.io/ecom-website/img/Album%204.png",
     },
   ];
-
   return (
     <React.Fragment>
       <Route path="/" exact>
@@ -48,26 +50,27 @@ function App() {
       <Route path="/home">
         <Home />
       </Route>
-
       <Switch>
         <ProductContextProvider>
           <CartContextProvider>
             <ShowCartContextProvider>
               <Header />
-              <Route path="/store" exact>
-                <Store productList={productsArr} />
+              <Route path="/product" exact>
+                {loginCtx.isloggedIn && <Store productList={productsArr} />}
+                {!loginCtx.isloggedIn && <Redirect to="/login" />}
               </Route>
             </ShowCartContextProvider>
           </CartContextProvider>
 
-          <Route path="/store/:productId">
+          <Route path="/product/:productId">
             <ProductDetail />
           </Route>
         </ProductContextProvider>
       </Switch>
 
       <Route path="/login">
-        <Login />
+        {!loginCtx.isloggedIn && <Login />}
+        {loginCtx.isloggedIn && <Redirect to="/home" />}
       </Route>
 
       <Route path="/about">
@@ -75,6 +78,10 @@ function App() {
       </Route>
       <Route path="/contact">
         <ContactUs />
+      </Route>
+
+      <Route path="*">
+        <Redirect to="/home" />
       </Route>
       {/* <Section productList={productsArr} /> */}
       <Footer />

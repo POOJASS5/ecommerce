@@ -41,13 +41,14 @@ export const CartContextProvider = (props) => {
   const loginCartHandler = useCallback(async () => {
     try {
       const response = await fetch(
-        `https://crudcrud.com/api/7b1052e21693468cb7073be748b565f3/cartItem${userEmail}`
+        `https://crudcrud.com/api/4e9c541bc445422e8ad139ce5eb56e6a/cartItem${userEmail}`
         
       );
 
       const data = await response.json();
       console.log("loggin called");
       if (response.ok) {
+        console.log("refresh");
         let refreshedItem = [];
         let refreshedAmount = 0;
 
